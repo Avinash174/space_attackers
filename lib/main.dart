@@ -46,7 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   bool isGameRunning = false;
   List<GlobalKey> globakeys = [];
   GlobalKey shipGlobalKey = GlobalKey();
-  int score=0;
+  int score = 0;
 
   List<AstroidData> astroidData = [];
   List<AstroidData> setAstroidData() {
@@ -73,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void startGame() {
+
     isGameRunning = true;
     Timer.periodic(Duration(milliseconds: 30), (timer) {
       time = time + 0.02;
@@ -81,6 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         shipY = intialPosition - maxHeight;
         if (isShipCollided()) {
           timer.cancel();
+          isGameRunning = false;
           resetData();
         }
       });
@@ -131,19 +133,18 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       astroidData[3].alignment = Alignment(2.2, generateRandomNumber());
     }
-    if(astroid1.x <=0.021&& astroid1.x >=0.001){
+    if (astroid1.x <= 0.021 && astroid1.x >= 0.001) {
       score++;
     }
-    if(astroid2.x <=0.021&& astroid2.x >=0.001){
+    if (astroid2.x <= 0.021 && astroid2.x >= 0.001) {
       score++;
     }
-    if(astroid3.x <=0.021&& astroid3.x >=0.001){
+    if (astroid3.x <= 0.021 && astroid3.x >= 0.001) {
       score++;
     }
-    if(astroid4.x <=0.021&& astroid4.x >=0.001){
+    if (astroid4.x <= 0.021 && astroid4.x >= 0.001) {
       score++;
     }
-
   }
 
   bool isShipCollided() {
@@ -180,13 +181,13 @@ class _MyHomePageState extends State<MyHomePage> {
               shipPosition.dx + shipSize.width > astroidPostion.dx &&
               shipPosition.dy < astroidPostion.dy + astroidSize.height &&
               shipPosition.dy + shipSize.height > astroidPostion.dy);
-      if(_isCollided){
-        isCollided=true;
+      if (_isCollided) {
+        isCollided = true;
         break;
-      }else if(checkCollision()){
+      } else if (checkCollision()) {
         return true;
-      }else{
-        isCollided=false;
+      } else {
+        isCollided = false;
       }
     }
     return isCollided;
@@ -214,7 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       time = 0.0;
       velocity = 2.9;
       gravity = -4.9;
-      score=0;
+      score = 0;
       isGameRunning = false;
     });
   }
@@ -313,7 +314,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
                       ),
-              ),
+                    ),
               Align(
                 alignment: Alignment(0, 0.95),
                 child: Text(
