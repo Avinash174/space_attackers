@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:space_attackers/collision_data.dart';
+
 import 'astroid_model.dart';
 import 'package:space_attackers/main.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,9 @@ class _MyHomePageState extends State<MyHomePage> {
   double time = 0.0;
   double gravity = -4.9;
   bool isGameRunning = false;
+  List<GlobalKey> globakeys = [];
+  GlobalKey shipGlobalKey = GlobalKey();
+  int score=0;
 
   List<AstroidData> astroidData = [];
   List<AstroidData> setAstroidData() {
@@ -68,6 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void startGame() {
+    resetData();
     isGameRunning = true;
     Timer.periodic(Duration(milliseconds: 30), (timer) {
       time = time + 0.02;
@@ -76,7 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
         shipY = intialPosition - maxHeight;
         if (isShipCollided()) {
           timer.cancel();
-          resetData();
+          isGameRunning = false;
         }
       });
       moveAstroid();
@@ -126,6 +132,19 @@ class _MyHomePageState extends State<MyHomePage> {
     } else {
       astroidData[3].alignment = Alignment(2.2, generateRandomNumber());
     }
+    if(astroid1.x <=0.021&& astroid1.x >=0.001){
+      score++;
+    }
+    if(astroid2.x <=0.021&& astroid2.x >=0.001){
+      score++;
+    }
+    if(astroid3.x <=0.021&& astroid3.x >=0.001){
+      score++;
+    }
+    if(astroid4.x <=0.021&& astroid4.x >=0.001){
+      score++;
+    }
+
   }
 
   bool isShipCollided() {
@@ -138,24 +157,68 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  bool checkCollision() {
+    bool isCollided = false;
+    RenderBox shipRenderBox =
+        shipGlobalKey.currentContext!.findRenderObject() as RenderBox;
+    List<ColllisionData> collisionData = [];
+    for (var element in globakeys) {
+      RenderBox renderBox =
+          element.currentContext!.findRenderObject() as RenderBox;
+      collisionData.add(ColllisionData(
+          sizeOfObject: renderBox.size,
+          positionOfBox: renderBox.localToGlobal(Offset.zero)));
+    }
+
+    for (var element in collisionData) {
+      final shipPosition = shipRenderBox.localToGlobal(Offset.zero);
+      final astroidPostion = element.positionOfBox;
+      final astroidSize = element.sizeOfObject;
+      final shipSize = shipRenderBox.size;
+
+      bool _isCollided =
+          (shipPosition.dx < astroidPostion.dx + astroidSize.width &&
+              shipPosition.dx + shipSize.width > astroidPostion.dx &&
+              shipPosition.dy < astroidPostion.dy + astroidSize.height &&
+              shipPosition.dy + shipSize.height > astroidPostion.dy);
+      if(_isCollided){
+        isCollided=true;
+        break;
+      }else if(checkCollision()){
+        return true;
+      }else{
+        isCollided=false;
+      }
+    }
+    return isCollided;
+  }
+
   void initState() {
     super.initState();
     astroidData = setAstroidData();
+    initialiseGlobalKeys();
   }
 
-  void resetData(){
+  void initialiseGlobalKeys() {
+    for (int i = 0; i < 4; i++) {
+      globakeys.add(GlobalKey());
+    }
+  }
+
+  void resetData() {
     setState(() {
-      astroidData=setAstroidData();
-      shipX=0.0;
-      shipY=0.0;
-      maxHeight=0.0;
-      intialPosition=0.0;
-      time=0.0;
-      velocity=2.9;
-      gravity=-4.9;
-      isGameRunning=false;
+      astroidData = setAstroidData();
+      shipX = 0.0;
+      shipY = 0.0;
+      maxHeight = 0.0;
+      intialPosition = 0.0;
+      time = 0.0;
+      velocity = 2.9;
+      gravity = -4.9;
+      isGameRunning = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,6 +239,7 @@ class _MyHomePageState extends State<MyHomePage> {
               Align(
                 alignment: Alignment(shipX, shipY),
                 child: Container(
+                  key: shipGlobalKey,
                   height: 100,
                   width: 130,
                   decoration: BoxDecoration(
@@ -184,6 +248,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Align(
+                key: globakeys[0],
                 alignment: astroidData[0].alignment,
                 child: Container(
                   height: astroidData[0].size.height,
@@ -194,6 +259,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Align(
+                key: globakeys[1],
                 alignment: astroidData[1].alignment,
                 child: Container(
                   height: astroidData[1].size.height,
@@ -204,6 +270,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Align(
+                key: globakeys[2],
                 alignment: astroidData[2].alignment,
                 child: Container(
                   height: astroidData[2].size.height,
@@ -214,6 +281,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               Align(
+                key: globakeys[3],
                 alignment: astroidData[3].alignment,
                 child: Container(
                   height: astroidData[3].size.height,
@@ -244,7 +312,19 @@ class _MyHomePageState extends State<MyHomePage> {
                             letterSpacing: 4,
                             fontSize: 20,
                             fontWeight: FontWeight.bold),
-                      ))
+                      ),
+              ),
+              Align(
+                alignment: Alignment(0, 0.95),
+                child: Text(
+                  "Score:$score",
+                  style: TextStyle(
+                      color: Colors.white,
+                      letterSpacing: 4,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
+                ),
+              ),
             ],
           ),
         ),
