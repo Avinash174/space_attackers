@@ -52,20 +52,20 @@ class _MyHomePageState extends State<MyHomePage> {
   List<AstroidData> setAstroidData() {
     List<AstroidData> data = [
       AstroidData(
-        alignment: Alignment(2, 0.7),
-        size: Size(40, 60),
+        alignment: Alignment(3.9, 0.7),
+        size: Size(70, 70),
       ),
       AstroidData(
-        alignment: Alignment(1.5, -0.5),
-        size: Size(80, 100),
+        alignment: Alignment(1.8, -0.5),
+        size: Size(100, 100),
       ),
       AstroidData(
         alignment: Alignment(3, -0.2),
-        size: Size(40, 50),
+        size: Size(40, 40),
       ),
       AstroidData(
-        alignment: Alignment(2.2, 0.2),
-        size: Size(60, 30),
+        alignment: Alignment(2.3, 0.2),
+        size: Size(60, 60),
       ),
     ];
 
@@ -215,6 +215,7 @@ class _MyHomePageState extends State<MyHomePage> {
       time = 0.0;
       velocity = 2.9;
       gravity = -4.9;
+      score=0;
       isGameRunning = false;
     });
   }
