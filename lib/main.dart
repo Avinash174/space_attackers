@@ -307,7 +307,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   : Align(
                       alignment: Alignment(0, -0.3),
                       child: Text(
-                        "TAB TO PLAY",
+                        "TAP TO PLAY",
                         style: TextStyle(
                             color: Colors.white,
                             letterSpacing: 4,
