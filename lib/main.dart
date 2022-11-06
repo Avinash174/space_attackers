@@ -46,12 +46,22 @@ class _MyHomePageState extends State<MyHomePage> {
   List<AstroidData> astroidData = [];
   List<AstroidData> setAstroidData() {
     List<AstroidData> data = [
-      AstroidData(alignment: Alignment(2, 0.7), size: Size(40, 60),
+      AstroidData(
+        alignment: Alignment(2, 0.7),
+        size: Size(40, 60),
       ),
-      AstroidData(alignment: Alignment(1.5, -0.5), size: Size(80, 100),),
-      AstroidData(alignment: Alignment(3, -0.2), size: Size(40, 50),),
-      AstroidData(alignment: Alignment(2.2, 0.2), size: Size(60, 30),),
-
+      AstroidData(
+        alignment: Alignment(1.5, -0.5),
+        size: Size(80, 100),
+      ),
+      AstroidData(
+        alignment: Alignment(3, -0.2),
+        size: Size(40, 50),
+      ),
+      AstroidData(
+        alignment: Alignment(2.2, 0.2),
+        size: Size(60, 30),
+      ),
     ];
 
     return data;
@@ -64,6 +74,10 @@ class _MyHomePageState extends State<MyHomePage> {
       setState(() {
         maxHeight = velocity * time + gravity * time * time;
         shipY = intialPosition - maxHeight;
+        if (isShipCollided()) {
+          timer.cancel();
+          resetData();
+        }
       });
       moveAstroid();
     });
@@ -75,50 +89,73 @@ class _MyHomePageState extends State<MyHomePage> {
       intialPosition = shipY;
     });
   }
-  double generateRandomNumber(){
-    Random rand =Random();
-    double randomDouble=rand.nextDouble() *(-1.0-1.0)+1.0;
+
+  double generateRandomNumber() {
+    Random rand = Random();
+    double randomDouble = rand.nextDouble() * (-1.0 - 1.0) + 1.0;
 
     return randomDouble;
   }
-  void moveAstroid()
-  {
-    Alignment astroid1=astroidData[0].alignment;
-    Alignment astroid2=astroidData[1].alignment;
-    Alignment astroid3=astroidData[2].alignment;
-    Alignment astroid4=astroidData[3].alignment;
 
-  if (astroid1.x>-1.4){
-    astroidData[0].alignment=Alignment(astroid1.x -0.02,astroid1.y);
-  }else{
-    astroidData[0].alignment=Alignment(2, generateRandomNumber());
+  void moveAstroid() {
+    Alignment astroid1 = astroidData[0].alignment;
+    Alignment astroid2 = astroidData[1].alignment;
+    Alignment astroid3 = astroidData[2].alignment;
+    Alignment astroid4 = astroidData[3].alignment;
+
+    if (astroid1.x > -1.4) {
+      astroidData[0].alignment = Alignment(astroid1.x - 0.02, astroid1.y);
+    } else {
+      astroidData[0].alignment = Alignment(2, generateRandomNumber());
+    }
+
+    if (astroid2.x > -1.4) {
+      astroidData[1].alignment = Alignment(astroid2.x - 0.02, astroid1.y);
+    } else {
+      astroidData[1].alignment = Alignment(1.5, generateRandomNumber());
+    }
+
+    if (astroid3.x > -1.4) {
+      astroidData[2].alignment = Alignment(astroid3.x - 0.02, astroid1.y);
+    } else {
+      astroidData[2].alignment = Alignment(3, generateRandomNumber());
+    }
+
+    if (astroid4.x > -1.4) {
+      astroidData[3].alignment = Alignment(astroid4.x - 0.02, astroid1.y);
+    } else {
+      astroidData[3].alignment = Alignment(2.2, generateRandomNumber());
+    }
   }
 
-    if (astroid2.x>-1.4){
-      astroidData[1].alignment=Alignment(astroid2.x -0.02,astroid1.y);
-    }else{
-      astroidData[1].alignment=Alignment(1.5, generateRandomNumber());
+  bool isShipCollided() {
+    if (shipY > 1) {
+      return true;
+    } else if (shipY < -0.9) {
+      return true;
+    } else {
+      return false;
     }
-
-    if (astroid3.x>-1.4){
-      astroidData[2].alignment=Alignment(astroid3.x -0.02,astroid1.y);
-    }else{
-      astroidData[2].alignment=Alignment(3, generateRandomNumber());
-    }
-
-    if (astroid4.x>-1.4){
-      astroidData[3].alignment=Alignment(astroid4.x -0.02,astroid1.y);
-    }else{
-      astroidData[3].alignment=Alignment(2.2, generateRandomNumber());
-    }
-
   }
 
-  void initState(){
+  void initState() {
     super.initState();
-    astroidData=setAstroidData();
+    astroidData = setAstroidData();
   }
 
+  void resetData(){
+    setState(() {
+      astroidData=setAstroidData();
+      shipX=0.0;
+      shipY=0.0;
+      maxHeight=0.0;
+      intialPosition=0.0;
+      time=0.0;
+      velocity=2.9;
+      gravity=-4.9;
+      isGameRunning=false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,8 +189,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: astroidData[0].size.height,
                   width: astroidData[0].size.width,
                   decoration: BoxDecoration(
-                    image: DecorationImage(image: AssetImage(astroidData[0].path))
-                  ),
+                      image: DecorationImage(
+                          image: AssetImage(astroidData[0].path))),
                 ),
               ),
               Align(
@@ -162,8 +199,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: astroidData[1].size.height,
                   width: astroidData[1].size.width,
                   decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(astroidData[0].path))
-                  ),
+                      image: DecorationImage(
+                          image: AssetImage(astroidData[0].path))),
                 ),
               ),
               Align(
@@ -172,8 +209,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: astroidData[2].size.height,
                   width: astroidData[2].size.width,
                   decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(astroidData[0].path))
-                  ),
+                      image: DecorationImage(
+                          image: AssetImage(astroidData[0].path))),
                 ),
               ),
               Align(
@@ -182,8 +219,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: astroidData[3].size.height,
                   width: astroidData[3].size.width,
                   decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(astroidData[0].path))
-                  ),
+                      image: DecorationImage(
+                          image: AssetImage(astroidData[0].path))),
                 ),
               ),
               Align(
@@ -192,10 +229,22 @@ class _MyHomePageState extends State<MyHomePage> {
                   height: astroidData[0].size.height,
                   width: astroidData[0].size.width,
                   decoration: BoxDecoration(
-                      image: DecorationImage(image: AssetImage(astroidData[0].path))
-                  ),
+                      image: DecorationImage(
+                          image: AssetImage(astroidData[0].path))),
                 ),
               ),
+              isGameRunning
+                  ? SizedBox()
+                  : Align(
+                      alignment: Alignment(0, -0.3),
+                      child: Text(
+                        "TAB TO PLAY",
+                        style: TextStyle(
+                            color: Colors.white,
+                            letterSpacing: 4,
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold),
+                      ))
             ],
           ),
         ),
