@@ -73,7 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void startGame() {
-    resetData();
     isGameRunning = true;
     Timer.periodic(Duration(milliseconds: 30), (timer) {
       time = time + 0.02;
@@ -82,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
         shipY = intialPosition - maxHeight;
         if (isShipCollided()) {
           timer.cancel();
-          isGameRunning = false;
+          resetData();
         }
       });
       moveAstroid();
